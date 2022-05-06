@@ -19,11 +19,65 @@
     <properties>
         <java.version>11</java.version>
         <revision>0.0.1-SNAPSHOT</revision>
+        <vavr.version>1.0.0-alpha-4</vavr.version>
+
+        <apache-toolchain-plugin.version>3.0.0</apache-toolchain-plugin.version>
     </properties>
 
     <modules>
         <module>user-management</module>
         <module>topic-management-app</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.vavr</groupId>
+                <artifactId>vavr</artifactId>
+                <version>${vavr.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>${apache-toolchain-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>toolchain</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <toolchains>
+                            <jdk>
+                                <version>${java.version}</version>
+                                <vendor>openjdk</vendor>
+                            </jdk>
+                        </toolchains>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
