@@ -1,5 +1,6 @@
 package com.smartshare.user_management.service.impl;
 
+import com.smartshare.user_management.model.User;
 import com.smartshare.user_management.service.ITestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +16,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TestService implements ITestService {
 
-    private final KafkaTemplate<Integer, String> kafkaTemplate;
+    private final KafkaTemplate<Integer, User> kafkaTemplate;
 
     @Override
     public void test() {
-        var sendResultListenableFuture = kafkaTemplate.send( "user", 1, "test value" );
+
+        var user = new User( "User", 29 );
+
+        var sendResultListenableFuture = kafkaTemplate.send( "user", 1, user );
 
         sendResultListenableFuture.addCallback( new KafkaSendCallback<>() {
 
             @Override
-            public void onSuccess(SendResult<Integer, String> result) {
-                log.info( "the data has been sent successfully at " + result.getProducerRecord().timestamp() );
+            public void onSuccess(SendResult<Integer, User> result) {
+                log.info( "the data has been sent successfully at " + result.getProducerRecord().toString() );
             }
 
             @Override
@@ -36,7 +40,7 @@ public class TestService implements ITestService {
     }
 
     @KafkaListener(topics = "user", groupId = "user-consumer-group", clientIdPrefix = "consumer")
-    public void listenGroupUser(String message) {
-        log.info( "Received Message in group user: " + message );
+    public void listenGroupUser(User user) {
+        log.info( "Received Message in group user: " + user.toString() );
     }
 }
