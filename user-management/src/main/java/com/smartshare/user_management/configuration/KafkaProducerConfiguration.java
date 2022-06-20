@@ -1,6 +1,7 @@
 package com.smartshare.user_management.configuration;
 
-import com.smartshare.user_management.model.User;
+import com.smartshare.user_management.model.AllTypes;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerSerializer;
@@ -22,18 +23,20 @@ public class KafkaProducerConfiguration {
         properties.put( ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "broker:9092" );
         properties.put( ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class );
         properties.put( ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class );
-        properties.put( "schema.registry.url", "http://schema-registry:8081" );
+        properties.put( AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://schema-registry:8081" );
+        properties.put( AbstractKafkaAvroSerDeConfig.AUTO_REGISTER_SCHEMAS, false );
+        properties.put( "use.latest.version", true );
         return properties;
     }
 
     @Bean
-    public ProducerFactory<Integer, User> producerFactory() {
+    public ProducerFactory<Integer, AllTypes> producerFactory() {
         return new DefaultKafkaProducerFactory<>( producerConfigs() );
     }
 
 
     @Bean
-    public KafkaTemplate<Integer, User> kafkaTemplate() {
+    public KafkaTemplate<Integer, AllTypes> kafkaTemplate() {
         return new KafkaTemplate<>( producerFactory() );
     }
 

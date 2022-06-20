@@ -1,5 +1,6 @@
 package com.smartshare.user_management.service.impl;
 
+import com.smartshare.user_management.model.AllTypes;
 import com.smartshare.user_management.model.User;
 import com.smartshare.user_management.service.ITestService;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +17,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TestService implements ITestService {
 
-    private final KafkaTemplate<Integer, User> kafkaTemplate;
+    private final KafkaTemplate<Integer, AllTypes> kafkaTemplate;
 
     @Override
     public void test() {
 
         var user = new User( "User", 29 );
 
-        var sendResultListenableFuture = kafkaTemplate.send( "user", 1, user );
+        var a = new AllTypes.Builder()
+                .setOneofType( user )
+                .build();
+
+        var sendResultListenableFuture = kafkaTemplate.send( "user", 1, a );
 
         sendResultListenableFuture.addCallback( new KafkaSendCallback<>() {
 
             @Override
-            public void onSuccess(SendResult<Integer, User> result) {
+            public void onSuccess(SendResult<Integer, AllTypes> result) {
                 log.info( "the data has been sent successfully at " + result.getProducerRecord().toString() );
             }
 
@@ -40,7 +45,7 @@ public class TestService implements ITestService {
     }
 
     @KafkaListener(topics = "user", groupId = "user-consumer-group", clientIdPrefix = "consumer")
-    public void listenGroupUser(User user) {
-        log.info( "Received Message in group user: " + user.toString() );
+    public void listenGroupUser(AllTypes allTypes) {
+        log.info( "Received Message in group user: " + allTypes.getOneofType().toString() );
     }
 }

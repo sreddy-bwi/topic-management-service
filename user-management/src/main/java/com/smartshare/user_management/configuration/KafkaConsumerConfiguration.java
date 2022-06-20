@@ -1,6 +1,6 @@
 package com.smartshare.user_management.configuration;
 
-import com.smartshare.user_management.model.User;
+import com.smartshare.user_management.model.AllTypes;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
@@ -34,13 +34,13 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<Integer, User> consumerFactory() {
+    public ConsumerFactory<Integer, AllTypes> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>( consumerConfigs() );
     }
 
     @Bean
-    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Integer, User>> kafkaListenerContainerFactory() {
-        var kafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<Integer, User>();
+    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Integer, AllTypes>> kafkaListenerContainerFactory() {
+        var kafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<Integer, AllTypes>();
         kafkaListenerContainerFactory.setConsumerFactory( consumerFactory() );
         kafkaListenerContainerFactory.setConcurrency( 3 );
         kafkaListenerContainerFactory.getContainerProperties().setPollTimeout( 3000 );
