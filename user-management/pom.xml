@@ -76,15 +76,14 @@
             <plugin>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-schema-registry-maven-plugin</artifactId>
-                <version>7.1.0</version>
                 <configuration>
                     <schemaRegistryUrls>
                         <param>http://127.0.0.1:8081</param>
                     </schemaRegistryUrls>
                     <subjects>
-                        <all-types-value>src/main/resources/avro/AllTypes.avsc</all-types-value>
-                        <user>src/main/resources/avro/User.avsc</user>
-                        <employee>src/main/resources/avro/Employee.avsc</employee>
+                        <all-types-value>src/main/resources/avro/all_types.avsc</all-types-value>
+                        <user>src/main/resources/avro/user.avsc</user>
+                        <employee>src/main/resources/avro/employee.avsc</employee>
                     </subjects>
                     <schemaTypes>
                         <all-types-value>AVRO</all-types-value>
@@ -103,6 +102,7 @@
                             </reference>
                         </all-types-value>
                     </references>
+                    <outputDirectory/>
                 </configuration>
                 <goals>
                     <goal>register</goal>

@@ -1,6 +1,7 @@
 package com.smartshare.user_management.service.impl;
 
 import com.smartshare.user_management.model.AllTypes;
+import com.smartshare.user_management.model.Employee;
 import com.smartshare.user_management.model.User;
 import com.smartshare.user_management.service.ITestService;
 import lombok.RequiredArgsConstructor;
@@ -17,35 +18,42 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TestService implements ITestService {
 
-    private final KafkaTemplate<Integer, AllTypes> kafkaTemplate;
+  private final KafkaTemplate<Integer, AllTypes> kafkaTemplate;
 
-    @Override
-    public void test() {
+  @Override
+  public void test() {
 
-        var user = new User( "User", 29 );
+    var user = new User("User", 29);
+    var employee = new Employee("Employee", 23);
 
-        var a = new AllTypes.Builder()
-                .setOneofType( user )
-                .build();
+    var a = new AllTypes.Builder().setOneOfType(user).build();
 
-        var sendResultListenableFuture = kafkaTemplate.send( "user", 1, a );
+    var b = new AllTypes.Builder().setOneOfType(employee).build();
 
-        sendResultListenableFuture.addCallback( new KafkaSendCallback<>() {
+    var sendResultListenableFuture = kafkaTemplate.send("all-types", 1, a);
 
-            @Override
-            public void onSuccess(SendResult<Integer, AllTypes> result) {
-                log.info( "the data has been sent successfully at " + result.getProducerRecord().toString() );
-            }
+    sendResultListenableFuture.addCallback(
+        new KafkaSendCallback<>() {
 
-            @Override
-            public void onFailure(KafkaProducerException e) {
-                log.error( "Failure while sending the record " + e.getCause() );
-            }
-        } );
-    }
+          @Override
+          public void onSuccess(SendResult<Integer, AllTypes> result) {
+            log.info("the data has been sent successfully at " + result.getProducerRecord());
+          }
 
-    @KafkaListener(topics = "user", groupId = "user-consumer-group", clientIdPrefix = "consumer")
-    public void listenGroupUser(AllTypes allTypes) {
-        log.info( "Received Message in group user: " + allTypes.getOneofType().toString() );
-    }
+          @Override
+          public void onFailure(KafkaProducerException e) {
+            log.error("Failure while sending the record " + e.getCause());
+          }
+        });
+
+    kafkaTemplate.send("all-types", 1, b);
+  }
+
+  @KafkaListener(
+      topics = "all-types",
+      groupId = "all-types-consumer-group",
+      clientIdPrefix = "consumer")
+  public void listenGroupUser(AllTypes allTypes) {
+    log.info("Received Message in group user: " + allTypes.getOneOfType().toString());
+  }
 }

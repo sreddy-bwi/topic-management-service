@@ -20,6 +20,7 @@
         <java.version>11</java.version>
         <revision>0.0.1-SNAPSHOT</revision>
         <vavr.version>1.0.0-alpha-4</vavr.version>
+        <kafka.version>7.1.0</kafka.version>
 
         <apache-toolchain-plugin.version>3.0.0</apache-toolchain-plugin.version>
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
@@ -42,22 +43,22 @@
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-schema-registry-client</artifactId>
-                <version>5.3.0</version>
+                <version>${kafka.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
-                <version>1.8.2</version>
+                <version>1.11.0</version>
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
-                <version>5.2.1</version>
+                <version>${kafka.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-streams-avro-serde</artifactId>
-                <version>5.3.0</version>
+                <version>${kafka.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -99,12 +100,12 @@
                 <plugin>
                     <groupId>org.apache.avro</groupId>
                     <artifactId>avro-maven-plugin</artifactId>
-                    <version>1.8.2</version>
+                    <version>1.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>io.confluent</groupId>
                     <artifactId>kafka-schema-registry-maven-plugin</artifactId>
-                    <version>7.1.1</version>
+                    <version>${kafka.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

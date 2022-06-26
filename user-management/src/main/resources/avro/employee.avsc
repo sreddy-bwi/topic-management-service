@@ -4,12 +4,12 @@
   "name": "Employee",
   "fields": [
     {
-      "name": "name",
+      "name": "employeeName",
       "type": "string",
       "avro.java.string": "String"
     },
     {
-      "name": "age",
+      "name": "employeeAge",
       "type": "int"
     }
   ]
